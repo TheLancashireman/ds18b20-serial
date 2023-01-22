@@ -28,10 +28,16 @@ TLIB_DIR	?=	../tiny-bare-metal/tinylib
 TIO_DIR		?=	../tiny-bare-metal/tinyio
 T1W_DIR		?=	../tiny-bare-metal/tiny1w
 
+# Default eeprom contents; override on the command line
+EEP_ID		?=	0x42
+EEP_SLEEP	?=	10
+
 GCC			=	avr-gcc
 GLD			=	avr-gcc
 GAR			=	avr-ar
 OBJCOPY		=	avr-objcopy
+
+AVRDUDE_OPT	=	-P $(ISPPORT) -b 19200 -c avrisp -p $(AVR)
 
 ifeq ($(AVR), t44)
 GNU_MCU		:=	attiny44
@@ -73,7 +79,7 @@ VPATH		+=	$(TLIB_DIR)
 VPATH		+=	$(TIO_DIR)
 VPATH		+=	$(T1W_DIR)
 
-.PHONY:		default clean hex upload
+.PHONY:		default clean hex upload write_eeprom read_eeprom
 
 default:	$(BUILD)/ds18b20-serial.elf
 
@@ -96,7 +102,13 @@ $(BUILD)/ds18b20-serial.ihex:	$(BUILD)/ds18b20-serial.elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
 upload:		$(BUILD)/ds18b20-serial.ihex
-	avrdude -P $(ISPPORT) -b 19200 -c avrisp -p $(AVR) -U flash:w:build/ds18b20-serial.ihex:i
+	avrdude $(AVRDUDE_OPT) -U flash:w:build/ds18b20-serial.ihex:i
+
+write_eeprom:
+	avrdude $(AVRDUDE_OPT) -U eeprom:w:$(EEP_ID),$(EEP_SLEEP):m
+
+read_eeprom:
+	avrdude $(AVRDUDE_OPT) -U eeprom:r:-:h
 
 include $(T1W_DIR)/tiny1w.make
 include $(TIO_DIR)/tinyio.make
