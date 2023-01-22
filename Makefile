@@ -30,7 +30,7 @@ T1W_DIR		?=	../tiny-bare-metal/tiny1w
 
 # Default eeprom contents; override on the command line
 EEP_ID		?=	0x42
-EEP_SLEEP	?=	10
+EEP_SLEEP	?=	25
 
 GCC			=	avr-gcc
 GLD			=	avr-gcc

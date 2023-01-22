@@ -54,21 +54,6 @@ static void put_temp(u16_t temp)
 	put_byte((u8_t)temp);
 }
 
-/* sleep() - delay for a while
- *
- * Temporary implementation. Need:
- * 	- delay parameter
- *	- low-power sleep
-*/
-static void sleep(void)
-{
-	u8_t t = TCNT0;
-	for ( u16_t i = 0; i < 48000; i++ )	/* 48000 * 104us ~= 5s */
-	{
-		t = bit_delay(t);
-	}
-}
-
 /* main() - this is where it happens :-)
  *
  * To do
@@ -83,13 +68,15 @@ int main(void)
 	s16_t tmin = 32767;
 	s16_t tmax = -32767;
 	u8_t id = read_eeprom(EEP_ID);
+	u8_t tSleep = read_eeprom(EEP_TSLEEP);
 
 	timing_init();
 	async_init();
 
 	for (;;)
 	{
-		sleep();
+		sleep(tSleep);
+
 		temp = ds18b20_read_temp();
 
 		putc('T');
