@@ -32,14 +32,26 @@
 #include "tinyio.h"
 #include <avr/pgmspace.h>
 
+/* EEPROM addresses
+*/
+#define EEP_ID		0	/* Unit identification */
+#define EEP_TSLEEP	1	/* Sleep duration */
+
+/* put_byte() - write a single byte to the serial output as 2 hex digits
+*/
+static void put_byte(u8_t b)
+{
+	putc(tohex(b >> 4));
+	putc(tohex(b));
+}
+
 /* put_temp() - write a temperature to the serial output
 */
-static inline void put_temp(u16_t temp)
+static void put_temp(u16_t temp)
 {
 	putc(' ');
 	putc(tohex(temp >> 8));
-	putc(tohex(temp >> 4));
-	putc(tohex(temp));
+	put_byte((u8_t)temp);
 }
 
 /* sleep() - delay for a while
@@ -48,7 +60,7 @@ static inline void put_temp(u16_t temp)
  * 	- delay parameter
  *	- low-power sleep
 */
-static inline void sleep(void)
+static void sleep(void)
 {
 	u8_t t = TCNT0;
 	for ( u16_t i = 0; i < 48000; i++ )	/* 48000 * 104us ~= 5s */
@@ -60,31 +72,36 @@ static inline void sleep(void)
 /* main() - this is where it happens :-)
  *
  * To do
- *	- a less frivolous message
+ *	- get id from eeprom
  *	- some kind of checksum
 */
 int main(void)
 {
+	disable();
+
 	u16_t temp;
 	s16_t tmin = 32767;
 	s16_t tmax = -32767;
+	u8_t id = read_eeprom(EEP_ID);
 
-	disable();
 	timing_init();
 	async_init();
 
-	puts_P(PSTR("Hello world!\n"));
 	for (;;)
 	{
 		sleep();
 		temp = ds18b20_read_temp();
 
-		puts_P(PSTR("T01"));
+		putc('T');
+		put_byte(id);
+
 		if ( (temp >> 8) == 0x80 )
 		{
 			/* Error: print error indicator
 			*/
-			puts_P(PSTR(" **"));
+			putc(' ');
+			putc('*');
+			putc('*');
 			putc(tohex(temp));
 		}
 		else
