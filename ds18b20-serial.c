@@ -32,25 +32,14 @@
 #include "tinyio.h"
 #include <avr/pgmspace.h>
 
-/* puth() - convert a nibble to a single ASCII-hex character and write to the serial port
+/* put_temp() - write a temperature to the serial output
 */
-static inline void puth(u8_t h)
-{
-	h = (h & 0x0f);
-	if ( h > 9)
-		putc(h - 10 + 'A');
-	else
-		putc(h + '0');
-}
-
-/* putt() - write a temperature to the serial output
-*/
-static inline void putt(u16_t temp)
+static inline void put_temp(u16_t temp)
 {
 	putc(' ');
-	puth(temp >> 8);
-	puth(temp >> 4);
-	puth(temp);
+	putc(tohex(temp >> 8));
+	putc(tohex(temp >> 4));
+	putc(tohex(temp));
 }
 
 /* sleep() - delay for a while
@@ -90,26 +79,26 @@ int main(void)
 		sleep();
 		temp = ds18b20_read_temp();
 
-		puts_P(PSTR("T01 "));
+		puts_P(PSTR("T01"));
 		if ( (temp >> 8) == 0x80 )
 		{
 			/* Error: print error indicator
 			*/
 			puts_P(PSTR(" **"));
-			puth(temp);
+			putc(tohex(temp));
 		}
 		else
 		{
 			/* Good temperature: print temp and calculate max/min
 			*/
-			putt(temp);
+			put_temp(temp);
 			if ( tmax < (s16_t)temp )	tmax = (s16_t)temp;
 			if ( tmin > (s16_t)temp )	tmin = (s16_t)temp;
 		}
 		/* Print max/min
 		*/
-		putt((u16_t)tmin);
-		putt((u16_t)tmax);
+		put_temp((u16_t)tmin);
+		put_temp((u16_t)tmax);
 		putc('\n');
 	}
 
