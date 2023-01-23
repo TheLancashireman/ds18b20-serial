@@ -32,10 +32,17 @@
 #include "tinyio.h"
 #include <avr/pgmspace.h>
 
+/* Disable sections of the main loop for power measurements.
+ * All have to be 1 for normal operation.
+*/
+#define DO_SLEEP	1
+#define DO_MEASURE	1
+#define DO_SEND		1
+
 /* EEPROM addresses
 */
 #define EEP_ID		0	/* Unit identification */
-#define EEP_TSLEEP	1	/* Sleep duration */
+#define EEP_TSLEEP	1	/* Sleep duration (seconds) */
 
 /* put_byte() - write a single byte to the serial output as 2 hex digits
 */
@@ -64,21 +71,32 @@ int main(void)
 {
 	disable();
 
+	/* Disable the watchdog
+	*/
+	MCUSR = 0;		// Ensure WDRF is clear
+	WDTCR = 0x10;	// Set WDCE, clear others (disables watchdog)
+
 	u16_t temp;
 	s16_t tmin = 32767;
 	s16_t tmax = -32767;
 	u8_t id = read_eeprom(EEP_ID);
-	u8_t tSleep = read_eeprom(EEP_TSLEEP);
-
+	u8_t t_sleep = read_eeprom(EEP_TSLEEP);
+	t_sleep = t_sleep * INTERVALS_PER_SEC;
+	
 	timing_init();
 	async_init();
 
 	for (;;)
 	{
-		sleep(tSleep);
+#if DO_SLEEP
+		sleep(t_sleep);
+#endif
 
+#if DO_MEASURE
 		temp = ds18b20_read_temp();
+#endif
 
+#if DO_SEND
 		putc('T');
 		put_byte(id);
 
@@ -104,6 +122,7 @@ int main(void)
 		put_temp((u16_t)tmin);
 		put_temp((u16_t)tmax);
 		putc('\n');
+#endif
 	}
 
 	return 0;
