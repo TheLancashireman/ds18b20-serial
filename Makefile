@@ -29,8 +29,10 @@ TIO_DIR		?=	../tiny-bare-metal/tinyio
 T1W_DIR		?=	../tiny-bare-metal/tiny1w
 
 # Default eeprom contents; override on the command line
+# 	- Unit ID for multi-drop comms
+#	- Sleep interval in seconds
 EEP_ID		?=	0x42
-EEP_SLEEP	?=	25
+EEP_SLEEP	?=	29
 
 GCC			=	avr-gcc
 GLD			=	avr-gcc
