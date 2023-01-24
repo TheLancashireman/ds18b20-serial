@@ -81,7 +81,7 @@ VPATH		+=	$(TLIB_DIR)
 VPATH		+=	$(TIO_DIR)
 VPATH		+=	$(T1W_DIR)
 
-.PHONY:		default clean hex upload write_eeprom read_eeprom
+.PHONY:		default clean hex upload write_eeprom read_eeprom eew eer
 
 default:	$(BUILD)/ds18b20-serial.elf
 
@@ -111,6 +111,10 @@ write_eeprom:
 
 read_eeprom:
 	avrdude $(AVRDUDE_OPT) -U eeprom:r:-:h
+
+eew:	write_eeprom
+
+eer:	read_eeprom
 
 include $(T1W_DIR)/tiny1w.make
 include $(TIO_DIR)/tinyio.make
