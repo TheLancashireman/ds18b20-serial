@@ -39,6 +39,19 @@
 #define DO_MEASURE	1
 #define DO_SEND		1
 
+
+/* Use wdsleep(secs) if true; sleep(intervals) if false
+*/
+#define USE_WDSLEEP		1
+
+#if USE_WDSLEEP
+#define TCONV(x)		(x)
+#define SLEEP(x)		wdsleep(x)
+#else
+#define TCONV(x)		((x) * INTERVALS_PER_SEC)
+#define SLEEP(x)		sleep(x)
+#endif
+
 /* EEPROM addresses
 */
 #define EEP_ID		0	/* Unit identification */
@@ -80,16 +93,18 @@ int main(void)
 	s16_t tmin = 32767;
 	s16_t tmax = -32767;
 	u8_t id = read_eeprom(EEP_ID);
-	u8_t t_sleep = read_eeprom(EEP_TSLEEP);
-	t_sleep = t_sleep * INTERVALS_PER_SEC;
+	u8_t t_sleep = TCONV(read_eeprom(EEP_TSLEEP));
 	
 	timing_init();
 	async_init();
 
+	putc('X');
+	putc('\n');
+
 	for (;;)
 	{
 #if DO_SLEEP
-		sleep(t_sleep);
+		SLEEP(t_sleep);
 #endif
 
 #if DO_MEASURE
