@@ -98,7 +98,10 @@ int main(void)
 	timing_init();
 	async_init();
 
-	putc('X');
+	/* Startup message
+	*/
+	putc('S');
+	put_byte(id);
 	putc('\n');
 
 	for (;;)
