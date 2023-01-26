@@ -31,6 +31,7 @@
 /* Other options. ToDo: put in common header?
 */
 #define ASYNC_BITRATE	9600
+#define ASYNC_TX_INVERT	1
 #define PASSIVE_TIME	1
 #define INT_LOCK		0
 #define HZ				1200000
