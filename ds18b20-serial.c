@@ -94,7 +94,14 @@ int main(void)
 	s16_t tmax = -32767;
 	u8_t id = read_eeprom(EEP_ID);
 	u8_t t_sleep = TCONV(read_eeprom(EEP_TSLEEP));
-	
+
+	/* Power consumption reduction measures
+	*/
+	DIDR0 = 0x37;	// Disable all data-in buffers except ADC3 ( = PB3 : 1-wire interface)
+	ACSR = (1<<ACD);
+
+	/* Initialise
+	*/
 	timing_init();
 	async_init();
 
