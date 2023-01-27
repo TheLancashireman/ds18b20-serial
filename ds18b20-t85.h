@@ -20,20 +20,24 @@
 #ifndef DS18B20_T85_H
 #define DS18B20_T85_H	1
 
+/*
+ *                             |--v--|
+ *                    PB5/Rst -|1   8|- Vcc
+ *          (ds18b20 I/O) PB3 -|2   7|- PB2
+ *           (serial out) PB4 -|3   6|- PB1
+ *                        Gnd -|4   5|- PB0/PCINT0
+ *                             |-----|
+*/
+
+#include "ds18b20-common.h"
+
 /* ds18b20-serial port and pin selections for ATtiny85
 */
 
+#define HZ				1000000
 #define ASYNC_TX_PORT	'B'
 #define ASYNC_TX_PIN	PB4
 #define T1W_PORT		'B'
 #define DS18B20_PIN		PB3
-
-/* Other options. ToDo: put in common header?
-*/
-#define ASYNC_BITRATE	9600
-#define ASYNC_TX_INVERT	1
-#define PASSIVE_TIME	1
-#define INT_LOCK		0
-#define HZ				1000000
 
 #endif

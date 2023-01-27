@@ -17,16 +17,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with ds18b20-serial.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-/*
- *                             |--v--|
- *                    PB5/Rst -|1   8|- Vcc
- *          (ds18b20 I/O) PB3 -|2   7|- PB2
- *           (serial out) PB4 -|3   6|- PB1
- *                        Gnd -|4   5|- PB0/PCINT0
- *                             |-----|
-*/
-
 #include "ds18b20.h"
 #include "tinylib.h"
 #include "tinyio.h"
@@ -38,7 +28,6 @@
 #define DO_SLEEP	1
 #define DO_MEASURE	1
 #define DO_SEND		1
-
 
 /* Use wdsleep(secs) if true; sleep(intervals) if false
 */
@@ -72,6 +61,18 @@ static void put_temp(u16_t temp)
 	putc(' ');
 	putc(tohex(temp >> 8));
 	put_byte((u8_t)temp);
+}
+
+/* ds18b20_power_on() - turn on power to ds18b20 sensor
+*/
+static inline void ds18b20_power_on(void)
+{
+}
+
+/* ds18b20_power_off() - turn off power to ds18b20 sensor
+*/
+static inline void ds18b20_power_off(void)
+{
 }
 
 /* main() - this is where it happens :-)
@@ -118,7 +119,9 @@ int main(void)
 #endif
 
 #if DO_MEASURE
+		ds18b20_power_on();
 		temp = ds18b20_read_temp();
+		ds18b20_power_off();
 #endif
 
 #if DO_SEND
@@ -146,6 +149,12 @@ int main(void)
 		*/
 		put_temp((u16_t)tmin);
 		put_temp((u16_t)tmax);
+
+#if DS18B20_CVT_TIME
+		putc(' ');
+		put_byte(cvt_iter);
+#endif
+
 		putc('\n');
 #endif
 	}
