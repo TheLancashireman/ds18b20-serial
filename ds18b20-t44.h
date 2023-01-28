@@ -26,7 +26,7 @@
  *           (serial out) PB0 -|2  13|- PA0
  *          (ds18b20 I/O) PB1 -|3  12|- PA1
  *                        PB3 -|4  11|- PA2
- *                        PB2 -|5  10|- PA3
+ *        (ds18b20 power) PB2 -|5  10|- PA3
  *                        PA7 -|6   9|- PA4
  *                        PA6 -|7   8|- PA5
  *                             |-----|
@@ -36,10 +36,12 @@
 
 /* ds18b20-serial port and pin selections for ATtiny44
 */
-#define HZ				1000000
-#define ASYNC_TX_PORT	'B'
-#define ASYNC_TX_PIN	PB0
-#define T1W_PORT		'B'
-#define DS18B20_PIN		PB1
+#define HZ					1000000
+#define ASYNC_TX_PORT		'B'
+#define ASYNC_TX_PIN		PB0
+#define T1W_PORT			'B'
+#define DS18B20_PIN			PB1
+#define DS18B20_POWER_PORT	'B'
+#define DS18B20_POWER_PIN	PB2
 
 #endif

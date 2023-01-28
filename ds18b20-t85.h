@@ -23,7 +23,7 @@
 /*
  *                             |--v--|
  *                    PB5/Rst -|1   8|- Vcc
- *          (ds18b20 I/O) PB3 -|2   7|- PB2
+ *          (ds18b20 I/O) PB3 -|2   7|- PB2 (ds18b20 power)
  *           (serial out) PB4 -|3   6|- PB1
  *                        Gnd -|4   5|- PB0/PCINT0
  *                             |-----|
@@ -33,11 +33,12 @@
 
 /* ds18b20-serial port and pin selections for ATtiny85
 */
-
-#define HZ				1000000
-#define ASYNC_TX_PORT	'B'
-#define ASYNC_TX_PIN	PB4
-#define T1W_PORT		'B'
-#define DS18B20_PIN		PB3
+#define HZ					1000000
+#define ASYNC_TX_PORT		'B'
+#define ASYNC_TX_PIN		PB4
+#define T1W_PORT			'B'
+#define DS18B20_PIN			PB3
+#define DS18B20_POWER_PORT	'B'
+#define DS18B20_POWER_PIN	PB2
 
 #endif
