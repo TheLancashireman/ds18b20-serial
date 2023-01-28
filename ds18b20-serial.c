@@ -63,18 +63,6 @@ static void put_temp(u16_t temp)
 	put_byte((u8_t)temp);
 }
 
-/* ds18b20_power_on() - turn on power to ds18b20 sensor
-*/
-static inline void ds18b20_power_on(void)
-{
-}
-
-/* ds18b20_power_off() - turn off power to ds18b20 sensor
-*/
-static inline void ds18b20_power_off(void)
-{
-}
-
 /* main() - this is where it happens :-)
  *
  * To do
@@ -119,9 +107,7 @@ int main(void)
 #endif
 
 #if DO_MEASURE
-		ds18b20_power_on();
 		temp = ds18b20_read_temp();
-		ds18b20_power_off();
 #endif
 
 #if DO_SEND
