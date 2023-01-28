@@ -38,6 +38,7 @@ GCC			=	avr-gcc
 GLD			=	avr-gcc
 GAR			=	avr-ar
 OBJCOPY		=	avr-objcopy
+SIZE		=	avr-size
 
 AVRDUDE_OPT	=	-P $(ISPPORT) -b 19200 -c avrisp -p $(AVR)
 
@@ -95,6 +96,7 @@ $(BUILD)/o:
 
 $(BUILD)/ds18b20-serial.elf:	$(OBJ_DIR) $(OBJS) $(LIB_DIR)/libtiny.a
 	$(GLD) $(LD_OPT) -o $@ $(OBJS) $(LD_LIB)
+	$(SIZE) $@
 	
 
 $(OBJ_DIR)/%.o:	%.c
