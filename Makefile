@@ -24,9 +24,10 @@ BUILD		?=	build
 ISPPORT		?=	/dev/ttyUSB0
 OBJ_DIR		?=	$(BUILD)/o
 LIB_DIR		?=	$(BUILD)/a
-TLIB_DIR	?=	../tiny-bare-metal/tinylib
-TIO_DIR		?=	../tiny-bare-metal/tinyio
-T1W_DIR		?=	../tiny-bare-metal/tiny1w
+TBM_DIR		?=	../../tiny-bare-metal
+TLIB_DIR	?=	$(TBM_DIR)/tinylib
+TIO_DIR		?=	$(TBM_DIR)/tinyio
+T1W_DIR		?=	$(TBM_DIR)/tiny1w
 
 # Default eeprom contents; override on the command line
 # 	- Unit ID for multi-drop comms

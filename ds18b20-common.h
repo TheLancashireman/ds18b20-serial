@@ -22,7 +22,14 @@
 
 #define PASSIVE_TIME		1		/* No overflow counting, no time variables */
 #define INT_LOCK			0		/* Runs with interrupts locked (except in special places) */
+
 #define ASYNC_BITRATE		9600
 #define ASYNC_TX_INVERT		1		/* Uses oc/od line driver */
+
+#define DS18B20_CVT_DLY_FIRST	WDSLEEP_256ms
+#define DS18B20_CVT_DLY_LOOP	WDSLEEP_16ms
+#define DS18B20_CVT_DLY_LIM		16
+
+#define DS18B20_CVT_TIME		1
 
 #endif
