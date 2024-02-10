@@ -18,7 +18,9 @@
 # along with ds18b20-serial  If not, see <http://www.gnu.org/licenses/>.
 
 
-AVR			?= t13
+#AVR			?= t13
+#AVR			?= t85
+AVR			?= t44
 
 BUILD		?=	build
 ISPPORT		?=	/dev/ttyUSB0
@@ -32,8 +34,8 @@ T1W_DIR		?=	$(TBM_DIR)/tiny1w
 # Default eeprom contents; override on the command line
 # 	- Unit ID for multi-drop comms
 #	- Sleep interval in seconds
-EEP_ID		?=	0x42
-EEP_SLEEP	?=	29
+EEP_ID		?=	0x44
+EEP_SLEEP	?=	5
 
 GCC			=	avr-gcc
 GLD			=	avr-gcc
