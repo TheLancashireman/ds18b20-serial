@@ -1,5 +1,11 @@
 /* ds18b20-t44.h - header file for ds18b20-serial project
  *
+ * This variant allows the use of a crystal to give better temperature stability
+ * while supporting more sensors.
+ *
+ * It would be possible to support more sensors or use a crystal on the 8-pin devices,
+ * but not both.
+ *
  * (c) David Haworth
  *
  *  This file is part of ds18b20-serial.
@@ -23,10 +29,10 @@
 /*
  *                             |--v--|
  *                        Vcc -|1  14|- Gnd
- *           (serial out) PB0 -|2  13|- PA0
- *          (ds18b20 I/O) PB1 -|3  12|- PA1
- *                        PB3 -|4  11|- PA2
- *        (ds18b20 power) PB2 -|5  10|- PA3
+ *           (xtal 8 MHz) PB0 -|2  13|- PA0 (ds18b20 power)
+ *           (xtal 8 MHz) PB1 -|3  12|- PA1 (ds18b20 I/O)
+ *                  RST - PB3 -|4  11|- PA2
+ *               (serial) PB2 -|5  10|- PA3
  *                        PA7 -|6   9|- PA4
  *                        PA6 -|7   8|- PA5
  *                             |-----|
@@ -38,10 +44,16 @@
 */
 #define HZ					1000000
 #define ASYNC_TX_PORT		'B'
-#define ASYNC_TX_PIN		PB0
-#define T1W_PORT			'B'
-#define DS18B20_PIN			PB1
-#define DS18B20_POWER_PORT	'B'
-#define DS18B20_POWER_PIN	PB2
+#define ASYNC_TX_PIN		PB2
+#define T1W_PORT			'A'
+#define DS18B20_PIN			PA1
+#define DS18B20_POWER_PORT	'A'
+#define DS18B20_POWER_PIN	PA0
+
+/* Disable all data-in buffers except ADC1 ( = PA1 : 1-wire interface)
+ *
+ * Note: will probably have to enable the T0 or T1 buffer as well.
+*/
+#define DIDR0_VAL	0xfd
 
 #endif

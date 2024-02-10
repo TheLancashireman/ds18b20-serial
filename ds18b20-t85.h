@@ -41,4 +41,8 @@
 #define DS18B20_POWER_PORT	'B'
 #define DS18B20_POWER_PIN	PB2
 
+/* Disable all data-in buffers except ADC3 ( = PB3 : 1-wire interface)
+*/
+#define DIDR0_VAL	0x37
+
 #endif

@@ -86,7 +86,7 @@ int main(void)
 
 	/* Power consumption reduction measures
 	*/
-	DIDR0 = 0x37;	// Disable all data-in buffers except ADC3 ( = PB3 : 1-wire interface)
+	DIDR0 = DIDR0_VAL;	// Disable all unused data-in buffers
 	ACSR = (1<<ACD);
 
 	/* Initialise
