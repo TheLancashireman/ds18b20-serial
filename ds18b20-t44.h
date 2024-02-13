@@ -50,10 +50,8 @@
 #define DS18B20_POWER_PORT	'A'
 #define DS18B20_POWER_PIN	PA0
 
-/* Disable all data-in buffers except ADC1 ( = PA1 : 1-wire interface)
- *
- * Note: will probably have to enable the T0 or T1 buffer as well.
+/* Disable all data-in buffers except ADC1 ( = PA1 : 1-wire interface) and ADC4 ( = PA4 : T1 input)
 */
-#define DIDR0_VAL	0xfd
+#define DIDR0_VAL	0xed
 
 #endif

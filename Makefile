@@ -17,10 +17,21 @@
 # You should have received a copy of the GNU General Public License
 # along with ds18b20-serial  If not, see <http://www.gnu.org/licenses/>.
 
+# Configuration area. All can be overridden on the command line, but
+# easier to edit these lines.
 
-#AVR			?= t13
-#AVR			?= t85
-AVR			?= t44
+# Device selection:  t13, t85, t44
+AVR				?= t44
+
+# eeprom contents
+# 	- Unit ID for multi-drop comms
+#	- Sleep interval in seconds
+EEP_ID			?=	0x44
+EEP_SLEEP		?=	5
+
+# Add a pulse counter (non-zero) or not (0)
+# Pulse counting uses T1 external input (only if TCNT1 is available).
+OPT_PULSECOUNT	?= 1
 
 BUILD		?=	build
 ISPPORT		?=	/dev/ttyUSB0
@@ -30,12 +41,6 @@ TBM_DIR		?=	../../tiny-bare-metal
 TLIB_DIR	?=	$(TBM_DIR)/tinylib
 TIO_DIR		?=	$(TBM_DIR)/tinyio
 T1W_DIR		?=	$(TBM_DIR)/tiny1w
-
-# Default eeprom contents; override on the command line
-# 	- Unit ID for multi-drop comms
-#	- Sleep interval in seconds
-EEP_ID		?=	0x44
-EEP_SLEEP	?=	5
 
 GCC			=	avr-gcc
 GLD			=	avr-gcc
@@ -66,6 +71,7 @@ CC_OPT		+=	-I .
 CC_OPT		+=	-I $(TLIB_DIR)
 CC_OPT		+=	-I $(TIO_DIR)
 CC_OPT		+=	-I $(T1W_DIR)
+CC_OPT		+=	-D OPT_PULSECOUNT=$(OPT_PULSECOUNT)
 
 # Debugging
 #CC_OPT		+= -D W1_PRESENCE=0

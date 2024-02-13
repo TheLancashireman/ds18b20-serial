@@ -27,7 +27,15 @@
 */
 #define DO_SLEEP	1
 #define DO_MEASURE	1
-#define DO_SEND		1
+#define DO_SENDTEMP	1
+
+#if OPT_PULSECOUNT
+#define DO_COUNT	1
+#define DO_SENDCNT	1
+#else
+#define DO_COUNT	0
+#define DO_SENDCNT	0
+#endif
 
 /* Use wdsleep(secs) if true; sleep(intervals) if false
 */
@@ -35,7 +43,7 @@
 
 #if USE_WDSLEEP
 #define TCONV(x)		(x)
-#define SLEEP(x)		wdsleep(x)
+#define SLEEP(x)		wdsleep(DS18B20_SLEEP_MODE, x)
 #else
 #define TCONV(x)		((x) * INTERVALS_PER_SEC)
 #define SLEEP(x)		sleep(x)
@@ -63,6 +71,37 @@ static void put_temp(u16_t temp)
 	put_byte((u8_t)temp);
 }
 
+#if OPT_PULSECOUNT
+static inline void counter_init(void)
+{
+	/* PA4 has to be an input with pullup
+	*/
+	port_pin_mode('A', PA4, PULLUP);	/* T1 input */
+
+	TCCR1A = 0x00;		/* OCRA and OCRB disconnected, normal mode */
+	TCCR1B = 0x06;		/* ICP not used, normal mode, external clock falling edge */
+	TCCR1C = 0x00;		/* No forced compare */
+	TCNT1 = 0;
+						/* Don't care what OCR1A, OCR1B and ICR1 are */
+	TIMSK1 = 0x00;		/* Mask all the interrupts */
+	TIFR1 = 0x27;		/* Clear all interrupt flags */
+}
+
+static inline u16_t read_t1(void)
+{
+	volatile u8_t h1, h2, l;
+//	u8_t s = disable();
+	do {
+		h1 = TCNT1H;
+		l = TCNT1L;
+		h2 = TCNT1H;
+	} while ( h1 != h2 );
+//	restore(s);
+
+	return ((u16_t)h1) * 256 + l;
+}
+#endif
+
 /* main() - this is where it happens :-)
  *
  * To do
@@ -83,6 +122,10 @@ int main(void)
 	s16_t tmax = -32767;
 	u8_t id = read_eeprom(EEP_ID);
 	u8_t t_sleep = TCONV(read_eeprom(EEP_TSLEEP));
+#if OPT_PULSECOUNT
+	u16_t count = 0;
+	u16_t diff;
+#endif
 
 	/* Power consumption reduction measures
 	*/
@@ -93,6 +136,9 @@ int main(void)
 	*/
 	timing_init();
 	async_init();
+#if OPT_PULSECOUNT
+	counter_init();
+#endif
 
 	/* Startup message
 	*/
@@ -106,11 +152,17 @@ int main(void)
 		SLEEP(t_sleep);
 #endif
 
+#if DO_COUNT
+		temp = read_t1();
+		diff = temp - count;
+		count = temp;
+#endif
+
 #if DO_MEASURE
 		temp = ds18b20_read_temp();
 #endif
 
-#if DO_SEND
+#if DO_SENDTEMP
 		putc('T');
 		put_byte(id);
 
@@ -140,6 +192,21 @@ int main(void)
 		putc(' ');
 		put_byte(cvt_iter);
 #endif
+
+		putc('\n');
+#endif
+
+#if DO_SENDCNT
+		putc('C');
+		put_byte(id);
+
+		putc(' ');
+		put_byte((u8_t)(count/256));
+		put_byte((u8_t)count);
+
+		putc(' ');
+		put_byte((u8_t)(diff/256));
+		put_byte((u8_t)diff);
 
 		putc('\n');
 #endif
