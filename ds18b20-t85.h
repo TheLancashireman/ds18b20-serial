@@ -31,6 +31,10 @@
 
 #include "ds18b20-common.h"
 
+#if OPT_PULSECOUNT
+#error "AtTiny85 doesn't have the required timer hardware for pulse counting"
+#endif
+
 /* ds18b20-serial port and pin selections for ATtiny85
 */
 #define HZ					1000000

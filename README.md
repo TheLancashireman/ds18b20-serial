@@ -2,6 +2,13 @@
 
 A remote temperature sensor module using a DS18B20 temperature sensor.
 
+There is also an option for counting pulses on a 16-bit counter (T1 on AtTiny44).
+The counter feature could be used for several purposes. For example:
+
+* To measure rainfall using a "tippler" mechanism
+* To measure radioactivity using a geiger tube and circuitry
+* To measure wind speed using an anemometer with pulse output
+
 Transmit by wired asynchronous serial protocol.
 
 ## Hardware
@@ -12,6 +19,7 @@ Transmit by wired asynchronous serial protocol.
 Options:
 * A 3.3v-capable USB-serial interface (e.g. FT232L board) for direct connection to PC
 * A 3.3v-capable micro (e.g. STM32, RP2040) for data-logging
+* A Hall-effect switch (HAL510 or similar) for rainfall measurement
 
 ## Additional libraries
 
